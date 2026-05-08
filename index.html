@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YayouLab — Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    ::selection { background: rgba(96,165,250,0.25); color: var(--text); }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    :root {
+      --bg:           #181A1B;
+      --bg2:          #1f2223;
+      --bg3:          #252829;
+      --border:       #2e3234;
+      --border2:      #3a3e40;
+      --text:         #f1f5f9;
+      --muted:        #94a3b8;
+      --muted2:       #6b7280;
+      --cerfia:       #1d9bf0;
+      --alertes:      #f4212e;
+      --accent:       #60a5fa;
+      --accent-hover: #3b82f6;
+    }
+
+    body.light {
+      --bg:           #f4f6f8;
+      --bg2:          #ffffff;
+      --bg3:          #edf0f4;
+      --border:       #d0d8e4;
+      --border2:      #b8c4d0;
+      --text:         #1e2128;
+      --muted:        #5a6580;
+      --muted2:       #4a5570;
+      --accent:       #3b82f6;
+      --accent-hover: #2563eb;
+    }
+
+    body.light .header {
+      background: linear-gradient(180deg, rgba(244,246,248,0.98) 0%, rgba(237,240,244,0.97) 100%) !important;
+      border-bottom-color: var(--border);
+    }
+
+    #theme-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    #theme-btn:hover { background: var(--border); }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(180deg, rgba(23,25,26,0.98) 0%, rgba(18,20,21,0.97) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(24px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-sep { width: 1px; height: 18px; background: var(--border2); flex-shrink: 0; }
+
+    .header-stat {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--muted2);
+      white-space: nowrap;
+    }
+
+    .header-stat strong {
+      color: var(--text); font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+
+    .header-clock {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .main { padding: 24px 26px 32px; display: flex; flex-direction: column; gap: 22px; }
+
+    /* ── APP TILES ── */
+    .apps-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
+
+    .apps-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--muted2);
+      margin-bottom: 12px;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 10px;
+    }
+    .grid-label {
+      grid-column: 1 / -1;
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--muted2);
+      padding: 8px 0 2px;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+
+    .app-tile {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      padding: 12px 8px 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      transition: border-color 0.2s cubic-bezier(0.4,0,0.2,1), transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    .app-tile:hover {
+      border-color: var(--accent);
+      background: var(--bg2);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 0 1px var(--accent), 0 4px 16px rgba(96,165,250,0.18);
+    }
+
+    .app-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .app-icon svg { width: 20px; height: 20px; stroke-width: 1.75; }
+
+    .app-name {
+      font-size: 10px; font-weight: 600; text-align: center;
+      color: var(--muted2); line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .app-tile { position: relative; }
+
+    .fav-btn {
+      position: absolute; top: 5px; right: 5px;
+      background: none; border: none; padding: 2px;
+      cursor: pointer; font-size: 13px; line-height: 1;
+      opacity: 0; transition: opacity 0.15s;
+      color: var(--muted); z-index: 1;
+    }
+    .app-tile:hover .fav-btn { opacity: 1; }
+    .app-tile.faved .fav-btn { opacity: 1; color: #fbbf24; }
+    .app-tile.faved { border-color: rgba(251,191,36,0.3); }
+    .tile-secondary {
+      display: block; margin-top: 6px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+      color: var(--muted2); text-decoration: none;
+      padding: 3px 8px; border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.15s, color 0.15s;
+    }
+    .tile-secondary:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    .favs-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--muted2);
+      margin-bottom: 10px; margin-top: 2px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .favs-title::before { content: '★'; color: #fbbf24; font-size: 11px; }
+    .favs-sep { height: 1px; background: var(--border); margin: 12px 0; }
+
+    #apps-favs { display: none; }
+
+    /* ── TWEETS ── */
+    .tweets-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .tweet-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 2px 14px rgba(0,0,0,0.4); }
+    .tweets-row .tweet-card:first-child { border-top: 2px solid #1d9bf0; }
+    .tweets-row .tweet-card:last-child { border-top: 2px solid #f4212e; }
+    .tweet-card-header { padding: 12px 16px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .tweet-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: #fff; flex-shrink: 0; }
+    .tweet-account-name { font-size: 13px; font-weight: 700; }
+    .tweet-account-handle { font-size: 11px; color: var(--muted2); }
+    .tweet-count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted2); flex-shrink: 0; }
+    .tweet-refresh-btn { background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--muted2); cursor: pointer; font-size: 13px; padding: 2px 7px; transition: color 0.15s, border-color 0.15s; flex-shrink: 0; }
+    .tweet-refresh-btn:hover { color: var(--text); border-color: var(--border2); }
+    .tweet-refresh-btn.spinning { animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .tweet-live-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2s ease-in-out infinite; flex-shrink: 0; }
+    .tweet-items { overflow-y: auto; flex: 1; max-height: 400px; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+    .tweet-items::-webkit-scrollbar { width: 4px; }
+    .tweet-items::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .tweet-item { padding: 10px 16px; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit; display: block; transition: background 0.15s; }
+    .tweet-item:last-child { border-bottom: none; }
+    .tweet-item:hover { background: var(--bg3); }
+    .tweet-item-inner { display: flex; align-items: flex-start; gap: 9px; }
+    .tweet-bullet { width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .tweet-body { flex: 1; min-width: 0; }
+    .tweet-text { font-size: 12.5px; line-height: 1.55; color: var(--text); word-break: break-word; margin-bottom: 4px; }
+    .tweet-meta { display: flex; align-items: center; gap: 8px; }
+    .tweet-time { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .tweet-link { font-size: 10px; color: var(--muted); opacity: 0; transition: opacity 0.15s; }
+    .tweet-item:hover .tweet-link { opacity: 1; }
+    .tweet-empty { padding: 20px 16px; text-align: center; color: var(--muted2); font-size: 12px; }
+
+
+    .hstat-block {
+      display: flex; flex-direction: column; gap: 1px;
+      flex-shrink: 0;
+      position: relative;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px;
+      cursor: default;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .hstat-block:hover { border-color: var(--accent); background: var(--bg2); }
+    .hstat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    .hstat-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+
+    .hstat-tip {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 11px 14px;
+      min-width: 170px;
+      max-width: 300px;
+      z-index: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,.65);
+      font-size: 11px;
+      line-height: 1.9;
+      color: var(--muted2);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .hstat-tip::before {
+      content: '';
+      position: absolute;
+      top: -5px; left: 50%; transform: translateX(-50%);
+      width: 8px; height: 8px;
+      background: var(--bg2);
+      border-left: 1px solid var(--border2);
+      border-top: 1px solid var(--border2);
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .hstat-tip strong { color: var(--text); font-weight: 600; }
+    .hstat-tip .tip-row { display: flex; justify-content: space-between; gap: 16px; }
+    .hstat-tip .tip-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .hstat-tip .tip-sep { height: 1px; background: var(--border); margin: 6px 0; }
+    .hstat-block:hover .hstat-tip { display: block; }
+
+    /* ── PANELS (conteneurs + alertes) ── */
+    .side-panel {
+      display: none; position: fixed; top: 0; right: 0; bottom: 0;
+      width: 360px; background: var(--bg2); border-left: 1px solid var(--border);
+      z-index: 1000; overflow-y: auto; flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,0,0,.6);
+    }
+    .side-panel.open { display: flex; }
+    .panel-header {
+      padding: 16px 18px 12px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .panel-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .panel-close {
+      background: none; border: none; color: var(--muted2); font-size: 18px;
+      cursor: pointer; padding: 2px 6px; border-radius: 4px;
+    }
+    .panel-close:hover { background: var(--bg3); color: var(--text); }
+    .panel-body { padding: 12px; flex: 1; }
+
+    /* Containers panel */
+    .ctr-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 8px; margin-bottom: 4px;
+      background: var(--bg3); border: 1px solid var(--border);
+    }
+    .ctr-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .ctr-name { flex: 1; font-size: 12px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ctr-status { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+    .restart-btn {
+      background: var(--bg2); border: 1px solid var(--border2); color: var(--muted2);
+      border-radius: 6px; padding: 3px 8px; font-size: 11px; cursor: pointer;
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .restart-btn:hover { border-color: #fbbf24; color: #fbbf24; }
+    .restart-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Alert history panel */
+    .alert-item {
+      padding: 8px 10px; border-radius: 8px; margin-bottom: 6px;
+      background: var(--bg3); border: 1px solid var(--border); font-size: 11px;
+    }
+    .alert-item-time { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-bottom: 3px; }
+    .alert-item-msg { color: var(--text); line-height: 1.4; }
+    .alert-item.ok { border-color: rgba(74,222,128,.3); }
+    .alert-item.warn { border-color: rgba(251,191,36,.3); }
+    .alert-item.err { border-color: rgba(248,113,113,.3); }
+    .panel-clear { background: none; border: 1px solid var(--border); color: var(--muted2); border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+    .panel-clear:hover { border-color: var(--border2); color: var(--text); }
+
+    /* ── SEARCH BAR ── */
+    .search-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .search-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .search-google-logo { flex-shrink: 0; display: flex; align-items: center; }
+    .search-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(96,165,250,0.12); }
+    .search-input::placeholder { color: var(--muted); }
+    .search-btn {
+      background: var(--cerfia);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 9px 16px;
+      transition: opacity 0.15s;
+    }
+    .search-btn:hover { opacity: 0.85; }
+
+    /* ── CALENDRIER NOTIFICATION ── */
+    .cal-notif {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(234,179,8,0.1);
+      border: 1px solid rgba(234,179,8,0.45);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text);
+      flex-wrap: wrap;
+    }
+    .cal-notif-label { flex: 1; min-width: 180px; }
+    .cal-notif-btns { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+    .cal-day-btn {
+      border: none; border-radius: 8px; cursor: pointer;
+      font-size: 12px; font-weight: 700; padding: 6px 14px;
+      transition: transform 0.1s, opacity 0.15s;
+      color: #fff;
+    }
+    .cal-day-btn:hover { transform: scale(1.08); opacity: 0.9; }
+    .cal-day-btn.vert   { background: #22c55e; }
+    .cal-day-btn.jaune  { background: #eab308; color: #1a1a1a; }
+    .cal-day-btn.rouge  { background: #ef4444; }
+    .cal-notif-link {
+      color: var(--muted2); font-size: 11px; text-decoration: none;
+      border-left: 1px solid var(--border2); padding-left: 10px; white-space: nowrap;
+    }
+    .cal-notif-link:hover { color: var(--text); }
+
+    /* Header btns */
+    .header-icon-btn {
+      background: var(--bg3); border: 1px solid var(--border2); color: var(--muted2);
+      border-radius: 8px; padding: 4px 8px; font-size: 14px; cursor: pointer; flex-shrink: 0;
+      transition: background 0.2s; position: relative;
+    }
+    .header-icon-btn:hover { background: var(--border); color: var(--text); }
+    .header-icon-btn .badge {
+      position: absolute; top: -4px; right: -4px; background: #f87171;
+      color: #fff; border-radius: 50%; width: 14px; height: 14px;
+      font-size: 9px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+    /* Derniers blocs : aligner la bulle à droite pour ne pas déborder */
+    #theme-btn ~ .hstat-block .hstat-tip,
+    .hstat-block:has(#w-ha-val) .hstat-tip,
+    .hstat-block:has(#w-cand-val) .hstat-tip,
+    .hstat-block:has(#h-up) .hstat-tip {
+      left: auto; right: 0; transform: none;
+    }
+    .hstat-block:has(#w-ha-val) .hstat-tip::before,
+    .hstat-block:has(#w-cand-val) .hstat-tip::before,
+    .hstat-block:has(#h-up) .hstat-tip::before {
+      left: auto; right: 12px; transform: rotate(45deg);
+    }
+
+
+    /* ── EDIT MODE ── */
+    .edit-btn { background:var(--bg3); border:1px solid var(--border2); color:var(--muted2); border-radius:8px; padding:4px 10px; font-size:13px; cursor:pointer; flex-shrink:0; transition:all 0.2s; }
+    .edit-btn.active { background:rgba(239,68,68,0.15); border-color:#ef4444; color:#ef4444; }
+    .save-btn { display:none; background:var(--accent); border:none; color:#fff; border-radius:8px; padding:4px 12px; font-size:13px; font-weight:600; cursor:pointer; flex-shrink:0; transition:background 0.15s; }
+    .save-btn:hover { background:var(--accent-hover); }
+    .edit-tile { position:relative !important; border-style:dashed !important; cursor:grab !important; }
+    .edit-tile:active { cursor:grabbing !important; }
+    .edit-del-btn { position:absolute; top:3px; right:3px; background:rgba(239,68,68,0.85); border:none; color:#fff; border-radius:50%; width:18px; height:18px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:5; padding:0; line-height:1; }
+    .edit-del-btn:hover { background:#ef4444; }
+    .edit-name-input { font-size:10px; font-weight:600; text-align:center; color:var(--muted2); background:var(--bg); border:1px solid var(--border2); border-radius:4px; padding:2px 4px; width:100%; box-sizing:border-box; font-family:inherit; }
+    .edit-section-row { display:flex; align-items:center; gap:8px; grid-column:1/-1; border-top:1px solid var(--border); margin-top:4px; padding:8px 0 2px; }
+    .edit-section-input { flex:1; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted2); background:var(--bg); border:1px solid var(--border2); border-radius:4px; padding:3px 6px; font-family:inherit; }
+    .edit-del-section-btn { font-size:10px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ef4444; border-radius:4px; padding:2px 8px; cursor:pointer; white-space:nowrap; }
+    .edit-add-app-btn { display:flex; align-items:center; justify-content:center; padding:12px 8px; background:rgba(96,165,250,0.05); border:1px dashed rgba(96,165,250,0.3); border-radius:10px; color:#60a5fa; font-size:12px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+    .edit-add-app-btn:hover { background:rgba(96,165,250,0.12); }
+    .edit-add-section-wrap { grid-column:1/-1; margin-top:6px; }
+    .edit-add-section-btn { width:100%; padding:8px; background:rgba(96,165,250,0.04); border:1px dashed rgba(96,165,250,0.2); border-radius:8px; color:#60a5fa; font-size:11px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+    .edit-add-section-btn:hover { background:rgba(96,165,250,0.1); }
+    .edit-drag-over { border-color:#60a5fa !important; background:rgba(96,165,250,0.1) !important; }
+    .edit-url-hint { font-size:9px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; text-align:center; }
+    .edit-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:2000; align-items:center; justify-content:center; }
+    .edit-modal-overlay.open { display:flex; }
+    .edit-modal-box { background:var(--bg2); border:1px solid var(--border2); border-radius:16px; padding:20px 22px; width:360px; max-width:95vw; box-shadow:0 24px 64px rgba(0,0,0,.7); }
+    .edit-modal-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:14px; }
+    .edit-modal-field { margin-bottom:10px; }
+    .edit-modal-field label { font-size:11px; font-weight:600; color:var(--muted2); text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:4px; }
+    .edit-modal-field input[type=text], .edit-modal-field input[type=url] { width:100%; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; padding:7px 10px; outline:none; box-sizing:border-box; }
+    .edit-modal-field input:focus { border-color:#60a5fa; }
+    .edit-modal-btns { display:flex; gap:8px; justify-content:flex-end; margin-top:14px; }
+    .edit-modal-cancel { background:var(--bg3); border:1px solid var(--border2); color:var(--muted2); border-radius:8px; padding:6px 14px; font-size:13px; cursor:pointer; }
+    .edit-modal-ok { background:#60a5fa; border:none; color:#fff; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; }
+    .edit-modal-ok:hover { opacity:0.9; }
+    /* Dossiers */
+    .folder-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:2000; align-items:center; justify-content:center; }
+    .folder-modal-overlay.open { display:flex; }
+    .folder-modal-box { background:var(--bg2); border:1px solid var(--border2); border-radius:16px; padding:18px 20px; width:480px; max-width:95vw; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 16px 48px rgba(0,0,0,.5); }
+    .folder-modal-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-shrink:0; }
+    .folder-modal-title { font-size:15px; font-weight:700; color:var(--text); flex:1; }
+    .folder-modal-close { background:none; border:none; color:var(--muted2); font-size:18px; cursor:pointer; padding:2px 6px; border-radius:4px; }
+    .folder-modal-close:hover { background:var(--bg3); color:var(--text); }
+    .folder-modal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:8px; overflow-y:auto; }
+    .edit-folder-container { grid-column:1/-1; background:rgba(251,191,36,0.05); border:1px dashed rgba(251,191,36,0.3); border-radius:12px; padding:10px 12px; }
+    .edit-folder-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .edit-folder-name { flex:1; font-size:12px; font-weight:700; background:var(--bg); border:1px solid var(--border2); border-radius:4px; padding:3px 8px; font-family:inherit; color:var(--text); }
+    .edit-folder-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:6px; min-height:40px; }
+    .edit-folder-empty { color:var(--muted); font-size:11px; grid-column:1/-1; text-align:center; padding:10px; }
+    .edit-folder-add-btn { font-size:11px; background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); color:#60a5fa; border-radius:4px; padding:2px 8px; cursor:pointer; white-space:nowrap; }
+    .edit-add-folder-btn { display:flex; align-items:center; justify-content:center; padding:12px 8px; background:rgba(251,191,36,0.05); border:1px dashed rgba(251,191,36,0.3); border-radius:10px; color:#fbbf24; font-size:12px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+    .edit-add-folder-btn:hover { background:rgba(251,191,36,0.12); }
+    /* Toast */
+    .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(12px); background:var(--bg2); border:1px solid var(--border2); border-radius:10px; padding:10px 22px; font-size:13px; font-weight:600; color:var(--text); z-index:9999; opacity:0; transition:opacity 0.2s, transform 0.2s; box-shadow:0 8px 24px rgba(0,0,0,.4); pointer-events:none; white-space:nowrap; }
+    .toast.toast-show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast-ok { border-color:#4ade80; color:#4ade80; }
+    .toast-err { border-color:#f87171; color:#f87171; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+    </div>
+    YayouLab
+  </div>
+  <div class="header-sep"></div>
+  <div class="hstat-block" style="cursor:pointer" onclick="toggleContainersPanel()"><div class="hstat-label">Conteneurs</div><div class="hstat-value"><span id="h-ctrs">–/–</span></div><div class="hstat-tip" id="tip-ctrs">–</div></div>
+  <div class="header-sep"></div>
+  <div class="hstat-block"><div class="hstat-label">CPU</div><div class="hstat-value" id="h-cpu">–%</div><div class="hstat-tip" id="tip-cpu">–</div></div>
+  <div class="header-sep"></div>
+  <div class="hstat-block"><div class="hstat-label">RAM</div><div class="hstat-value" id="h-ram">– / – GB</div><div class="hstat-tip" id="tip-ram">–</div></div>
+  <div class="header-sep"></div>
+  <div class="hstat-block"><div class="hstat-label">SSD</div><div class="hstat-value" id="h-disk">– / – GB</div><div class="hstat-tip" id="tip-disk">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">HDD ext4</div><div class="hstat-value" id="h-hdd">– / – GB</div><div class="hstat-tip" id="tip-hdd">–</div></div>
+  <div class="header-sep"></div>
+  <div class="hstat-block"><div class="hstat-label">↓ Download</div><div class="hstat-value" id="h-dl">–</div><div class="hstat-tip" id="tip-dl">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">↑ Upload</div><div class="hstat-value" id="h-up">–</div><div class="hstat-tip" id="tip-up">–</div></div>
+  <div class="hstat-block" style="cursor:pointer" onclick="toggleTorrentsPanel()"><div class="hstat-label">🌊 Torrents</div><div class="hstat-value" id="h-torrents">–</div><div class="hstat-tip" id="tip-torrents">–</div></div>
+  <div class="header-sep"></div>
+  <div class="hstat-block" style="cursor:pointer;position:relative" onclick="toggleWeatherPanel()">
+    <div class="hstat-label">Bessières</div>
+    <div class="hstat-value" id="h-weather">–</div>
+    <div id="weather-panel" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;min-width:220px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.4);font-size:12px;line-height:2">
+      <div style="font-weight:700;color:var(--text);margin-bottom:8px;font-size:13px">🌡️ Météo Bessières</div>
+      <div id="wp-details">–</div>
+    </div>
+  </div>
+  <div class="header-sep"></div>
+  <div class="header-sep"></div>
+  <div class="hstat-block"><div class="hstat-label">🔔 Docker</div><div class="hstat-value" id="w-docker-val">–</div><div class="hstat-tip" id="tip-docker">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">💾 Backup</div><div class="hstat-value" id="w-backup-val">–</div><div class="hstat-tip" id="tip-backup">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">🌐 Ping</div><div class="hstat-value" id="w-ping-val">–</div><div class="hstat-tip" id="tip-ping">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">🔒 Cloudflare</div><div class="hstat-value" id="w-cf-val">–</div><div class="hstat-tip" id="tip-cf">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">📡 Réseau</div><div class="hstat-value" id="w-net-val">–</div><div class="hstat-tip" id="tip-net">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">💼 Candidatures</div><div class="hstat-value" id="w-cand-val">–</div><div class="hstat-tip" id="tip-cand">–</div></div>
+  <div class="hstat-block"><div class="hstat-label">🏠 HA</div><div class="hstat-value" id="w-ha-val">–</div><div class="hstat-tip" id="tip-ha">–</div></div>
+  <div class="header-sep"></div>
+  <div class="header-stat" id="h-updated" style="color:var(--muted);font-size:10px">—</div>
+  <button class="header-icon-btn" onclick="toggleAlertsPanel()" title="Historique alertes">🔔<span class="badge" id="alerts-badge" style="display:none"></span></button>
+  <button id="theme-btn" onclick="toggleTheme()">☀️</button>
+  <button class="edit-btn" id="edit-btn" onclick="toggleEditMode()">✏️ Éditer</button>
+  <button class="save-btn" id="save-btn" onclick="saveConfig()">💾 Sauvegarder</button>
+  <div class="header-clock" id="clock">00:00:00</div>
+</header>
+
+<!-- Panel conteneurs -->
+<div class="side-panel" id="containers-panel">
+  <div class="panel-header">
+    <span class="panel-title">🐋 Conteneurs</span>
+    <button class="panel-close" onclick="toggleContainersPanel()">✕</button>
+  </div>
+  <div class="panel-body" id="containers-list">Chargement…</div>
+</div>
+
+<!-- Panel torrents -->
+<div class="side-panel" id="torrents-panel">
+  <div class="panel-header">
+    <span class="panel-title">🌊 Torrents</span>
+    <button class="panel-close" onclick="toggleTorrentsPanel()">✕</button>
+  </div>
+  <div class="panel-body" id="torrents-list">Chargement…</div>
+</div>
+
+<!-- Panel historique alertes -->
+<div class="side-panel" id="alerts-panel">
+  <div class="panel-header">
+    <span class="panel-title">🔔 Historique des alertes</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="panel-clear" onclick="clearAlertHistory()">Effacer</button>
+      <button class="panel-close" onclick="toggleAlertsPanel()">✕</button>
+    </div>
+  </div>
+  <div class="panel-body" id="alerts-history-list">Aucune alerte enregistrée.</div>
+</div>
+
+<!-- Modal ajout app -->
+<div class="edit-modal-overlay" id="edit-modal">
+  <div class="edit-modal-box">
+    <div class="edit-modal-title">Nouvelle application</div>
+    <div class="edit-modal-field"><label>Nom</label><input type="text" id="modal-name" placeholder="Mon App" /></div>
+    <div class="edit-modal-field"><label>URL</label><input type="url" id="modal-url" placeholder="http://192.168.1.36:XXXX" /></div>
+    <div class="edit-modal-field"><label>Icône Lucide</label><input type="text" id="modal-icon" placeholder="rocket, shield, home, star…" /></div>
+    <div class="edit-modal-field" style="display:flex;gap:16px;align-items:flex-end">
+      <div style="flex:1"><label>Couleur</label><input id="modal-color" type="color" value="#60a5fa" style="width:100%;height:34px;padding:2px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer" /></div>
+    </div>
+    <div class="edit-modal-btns">
+      <button class="edit-modal-cancel" onclick="closeModal()">Annuler</button>
+      <button class="edit-modal-ok" onclick="confirmAddApp()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ── FAVORIS ── -->
+  <div class="apps-section" id="apps-favs" style="display:none">
+    <div class="favs-title">Favoris</div>
+    <div class="apps-grid" id="favs-grid"></div>
+  </div>
+
+  <!-- ── SEARCH ── -->
+  <div class="search-section">
+    <form class="search-form" onsubmit="doSearch(event)">
+      <div class="search-google-logo">
+        <svg width="24" height="24" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+      </div>
+      <input id="search-input" class="search-input" type="text" placeholder="Rechercher sur Google…" autocomplete="off" />
+      <button class="search-btn" type="submit">🔍</button>
+    </form>
+  </div>
+
+  <!-- ── CALENDRIER NOTIFICATION ── -->
+  <div class="cal-notif" id="cal-notif">
+    <span>📅</span>
+    <div class="cal-notif-label">Comment s'est passée ta journée du <strong id="cal-notif-date"></strong> ?</div>
+    <div class="cal-notif-btns">
+      <button class="cal-day-btn vert"  onclick="fillYesterday('vert')">Vert</button>
+      <button class="cal-day-btn jaune" onclick="fillYesterday('jaune')">Jaune</button>
+      <button class="cal-day-btn rouge" onclick="fillYesterday('rouge')">Rouge</button>
+    </div>
+    <a class="cal-notif-link" href="http://192.168.1.36:8092" target="_blank">Ouvrir calendrier</a>
+  </div>
+
+  <!-- ── TWEETS ── -->
+  <div class="tweets-row">
+    <div class="tweet-card">
+      <div class="tweet-card-header">
+        <div class="tweet-avatar" style="background:#1d9bf0">CF</div>
+        <div>
+          <a class="tweet-account-name" href="https://twitter.com/CerfiaFR" target="_blank" style="text-decoration:none;color:inherit;">CerfiaFR</a>
+          <div class="tweet-account-handle">Actualités & politique France</div>
+        </div>
+        <span class="tweet-count" id="count-cerfia"></span>
+        <button class="tweet-refresh-btn" id="refresh-cerfia" onclick="refreshAccount('CerfiaFR','refresh-cerfia','tweets-cerfia','count-cerfia','#1d9bf0')">↻</button>
+        <div class="tweet-live-dot" style="background:var(--muted2)"></div>
+      </div>
+      <div class="tweet-items" id="tweets-cerfia"><div class="tweet-empty">Chargement…</div></div>
+    </div>
+    <div class="tweet-card">
+      <div class="tweet-card-header">
+        <div class="tweet-avatar" style="background:#f4212e">AI</div>
+        <div>
+          <a class="tweet-account-name" href="https://twitter.com/AlertesInfos" target="_blank" style="text-decoration:none;color:inherit;">AlertesInfos</a>
+          <div class="tweet-account-handle">Alertes & infos en direct</div>
+        </div>
+        <span class="tweet-count" id="count-alertes"></span>
+        <button class="tweet-refresh-btn" id="refresh-alertes" onclick="refreshAccount('AlertesInfos','refresh-alertes','tweets-alertes','count-alertes','#f4212e')">↻</button>
+        <div class="tweet-live-dot" style="background:var(--muted2)"></div>
+      </div>
+      <div class="tweet-items" id="tweets-alertes"><div class="tweet-empty">Chargement…</div></div>
+    </div>
+  </div>
+
+  <!-- ── APPS ── -->
+  <div class="apps-section">
+    <div class="apps-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0">
+      Applications
+      <button id="apps-toggle" onclick="toggleApps()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--muted2);border-radius:6px;padding:2px 10px;font-size:13px;cursor:pointer;transition:background 0.15s" title="Réduire/Agrandir">▲</button>
+    </div>
+    <div id="apps-collapsible" style="margin-top:12px">
+      <div class="apps-grid" id="apps-grid"></div>
+    </div>
+  </div>
+
+
+</div>
+
+<script>
+  const SYSTEM_URL  = 'http://192.168.1.36:2998/system';
+  const TWEETS_URL  = 'http://192.168.1.36:8089/tweets';
+
+  /* ─ Tooltip helper ─ */
+  let _containers = [];
+  function setTip(id, html) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  }
+
+  /* ─ Clock ─ */
+  function tickClock() {
+    const n = new Date();
+    document.getElementById('clock').textContent =
+      String(n.getHours()).padStart(2,'0') + ':' +
+      String(n.getMinutes()).padStart(2,'0') + ':' +
+      String(n.getSeconds()).padStart(2,'0');
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  /* ─ Format ─ */
+  function fmtBytes(b) {
+    if (b >= 1073741824) return [(b/1073741824).toFixed(2), 'GB'];
+    if (b >= 1048576)    return [(b/1048576).toFixed(1),    'MB'];
+    if (b >= 1024)       return [(b/1024).toFixed(1),       'KB'];
+    return [b.toFixed(0), 'B'];
+  }
+
+  function fmtGB(b) { return (b / 1073741824).toFixed(1); }
+
+  function timeAgo(str) {
+    if (!str) return '';
+    const d = new Date(str); if (isNaN(d)) return '';
+    const s = Math.floor((Date.now() - d) / 1000);
+    if (s < 60) return s + 's'; if (s < 3600) return Math.floor(s/60) + 'min';
+    if (s < 86400) return Math.floor(s/3600) + 'h'; return Math.floor(s/86400) + 'j';
+  }
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ─ System fetch ─ */
+  async function fetchSystem() {
+    try {
+      const [d, containers] = await Promise.all([
+        fetch(SYSTEM_URL).then(r => r.json()),
+        fetch('http://192.168.1.36:2998/stats').then(r => r.json()).catch(() => []),
+      ]);
+      _containers = containers;
+      try { updateContainerWidgets(containers); } catch(e) {}
+
+      const cpuPct = d.cpu || 0;
+      const [dlv, dlu] = fmtBytes(d.qbt_dl || 0);
+      const [upv, upu] = fmtBytes(d.qbt_up || 0);
+
+      document.getElementById('h-cpu').textContent  = cpuPct.toFixed(1) + '%';
+      document.getElementById('h-ram').textContent  = fmtGB(d.mem_used||0) + ' / ' + fmtGB(d.mem_total||0) + ' GB';
+      document.getElementById('h-disk').textContent = fmtGB(d.disk_used||0) + ' / ' + fmtGB(d.disk_total||0) + ' GB';
+      document.getElementById('h-hdd').textContent  = fmtGB(d.hdd_used||0) + ' / ' + fmtGB(d.hdd_total||0) + ' GB';
+      document.getElementById('h-dl').textContent   = dlv + ' ' + dlu + '/s';
+      document.getElementById('h-up').textContent   = upv + ' ' + upu + '/s';
+      document.getElementById('h-ctrs').textContent = `${d.containers_running||'–'}/${d.containers_total||'–'}`;
+      document.getElementById('h-updated').textContent = 'MàJ ' + new Date().toLocaleTimeString('fr-FR');
+
+      /* ── Tips système ── */
+      // Conteneurs : liste des non-running
+      const stopped = containers.filter(c => c.status !== 'running');
+      setTip('tip-ctrs', stopped.length === 0
+        ? `<div class="tip-title">Conteneurs</div><span style="color:#4ade80">✓ Tous opérationnels</span>`
+        : `<div class="tip-title">Arrêtés (${stopped.length})</div>` + stopped.map(c =>
+            `<div class="tip-row"><span>🔴 ${escHtml(c.name)}</span><strong>${escHtml(c.status)}</strong></div>`
+          ).join(''));
+
+      // CPU : top 3 conteneurs
+      const topCpu = [...containers].filter(c => c.status === 'running').sort((a,b) => b.cpu - a.cpu).slice(0,3);
+      setTip('tip-cpu', `<div class="tip-title">Top CPU</div>` + (topCpu.length
+        ? topCpu.map(c => `<div class="tip-row"><span>${escHtml(c.name)}</span><strong>${c.cpu}%</strong></div>`).join('')
+        : '–'));
+
+      // RAM : top 3 conteneurs
+      const topRam = [...containers].filter(c => c.status === 'running').sort((a,b) => b.mem - a.mem).slice(0,3);
+      const freeRam = (d.mem_total||0) - (d.mem_used||0);
+      setTip('tip-ram', `<div class="tip-title">RAM</div>` +
+        `<div class="tip-row"><span>Libre</span><strong>${fmtGB(freeRam)} GB</strong></div>` +
+        `<div class="tip-sep"></div><div class="tip-title">Top mémoire</div>` +
+        (topRam.length ? topRam.map(c =>
+          `<div class="tip-row"><span>${escHtml(c.name)}</span><strong>${fmtGB(c.mem)} GB</strong></div>`
+        ).join('') : '–'));
+
+      // SSD
+      const freeDisk = (d.disk_total||0) - (d.disk_used||0);
+      setTip('tip-disk', `<div class="tip-title">SSD</div>` +
+        `<div class="tip-row"><span>Utilisé</span><strong>${fmtGB(d.disk_used||0)} GB</strong></div>` +
+        `<div class="tip-row"><span>Libre</span><strong>${fmtGB(freeDisk)} GB</strong></div>` +
+        `<div class="tip-row"><span>Total</span><strong>${fmtGB(d.disk_total||0)} GB</strong></div>`);
+
+      // HDD
+      if (d.hdd_total) {
+        const freeHdd = (d.hdd_total||0) - (d.hdd_used||0);
+        setTip('tip-hdd', `<div class="tip-title">HDD ext4</div>` +
+          `<div class="tip-row"><span>Utilisé</span><strong>${fmtGB(d.hdd_used||0)} GB</strong></div>` +
+          `<div class="tip-row"><span>Libre</span><strong>${fmtGB(freeHdd)} GB</strong></div>` +
+          `<div class="tip-row"><span>Total</span><strong>${fmtGB(d.hdd_total||0)} GB</strong></div>`);
+      }
+
+      // Download / Upload
+      setTip('tip-dl', `<div class="tip-title">qBittorrent</div><div class="tip-row"><span>↓ Vitesse DL</span><strong>${dlv} ${dlu}/s</strong></div>`);
+      setTip('tip-up', `<div class="tip-title">qBittorrent</div><div class="tip-row"><span>↑ Vitesse UP</span><strong>${upv} ${upu}/s</strong></div>`);
+
+    } catch(e) {}
+  }
+
+  /* ─ Tweets ─ */
+  function renderTweets(containerId, countId, tweets, color) {
+    const el = document.getElementById(containerId);
+    if (!tweets.length) { el.innerHTML = '<div class="tweet-empty">Aucun tweet</div>'; return; }
+    document.getElementById(countId).textContent = tweets.length + ' tweets';
+    el.innerHTML = tweets.map(t => {
+      const text = (t.content || t.title || '').trim();
+      const ago  = timeAgo(t.pubDate);
+      return `<a class="tweet-item" href="${escHtml(t.link)}" target="_blank" rel="noopener noreferrer">
+        <div class="tweet-item-inner">
+          <div class="tweet-bullet" style="background:${color}"></div>
+          <div class="tweet-body">
+            <div class="tweet-text">${escHtml(text)}</div>
+            <div class="tweet-meta">${ago ? `<span class="tweet-time">${ago}</span>` : ''}<span class="tweet-link">↗ ouvrir</span></div>
+          </div>
+        </div></a>`;
+    }).join('');
+  }
+
+  async function refreshAccount(account, btnId, containerId, countId, color) {
+    const btn = document.getElementById(btnId);
+    btn.classList.add('spinning'); btn.disabled = true;
+    try {
+      const d = await fetch(TWEETS_URL).then(r => r.json());
+      renderTweets(containerId, countId, (d.tweets||[]).filter(t => t.account === account && !t.error), color);
+    } catch(e) {}
+    btn.classList.remove('spinning'); btn.disabled = false;
+  }
+
+  async function fetchTweets() {
+    try {
+      const d = await fetch(TWEETS_URL).then(r => r.json());
+      const all = d.tweets || [];
+      renderTweets('tweets-cerfia',  'count-cerfia',  all.filter(t => t.account === 'CerfiaFR'     && !t.error), '#1d9bf0');
+      renderTweets('tweets-alertes', 'count-alertes', all.filter(t => t.account === 'AlertesInfos' && !t.error), '#f4212e');
+    } catch(e) {
+      ['tweets-cerfia','tweets-alertes'].forEach(id => {
+        document.getElementById(id).innerHTML = '<div class="tweet-empty">Service indisponible</div>';
+      });
+    }
+  }
+
+  /* ── APPS DYNAMIQUES (apps.json) ── */
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function makeTile(app) {
+    const tile = document.createElement('a');
+    tile.className = 'app-tile';
+    tile.dataset.app = app.id;
+    tile.href = app.url;
+    tile.target = '_blank';
+    tile.rel = 'noopener noreferrer';
+
+    const favBtn = document.createElement('button');
+    favBtn.className = 'fav-btn';
+    favBtn.textContent = '★';
+    favBtn.onclick = (e) => toggleFav(e, app.id);
+
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'app-icon';
+    if (app.color) {
+      iconDiv.style.background = hexToRgba(app.color, 0.12);
+      iconDiv.style.border = `1px solid ${hexToRgba(app.color, 0.22)}`;
+    }
+    if (app.lucide) {
+      const ico = document.createElement('i');
+      ico.dataset.lucide = app.lucide;
+      ico.style.color = app.color || 'var(--muted2)';
+      iconDiv.appendChild(ico);
+    } else {
+      iconDiv.textContent = app.emoji || '📦';
+    }
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'app-name';
+    nameDiv.textContent = app.name;
+
+    tile.appendChild(favBtn);
+    tile.appendChild(iconDiv);
+    tile.appendChild(nameDiv);
+
+    if (app.secondary) {
+      const secLink = document.createElement('span');
+      secLink.className = 'tile-secondary';
+      secLink.textContent = (app.secondary.label || 'Voir') + ' →';
+      secLink.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open(app.secondary.url, '_blank', 'noopener,noreferrer');
+      };
+      tile.appendChild(secLink);
+    }
+
+    return tile;
+  }
+
+  let currentConfig = null;
+  let editMode = false;
+  let _configBackup = null;
+  let _addModalSectionIdx = 0;
+
+  async function loadApps() {
+    try {
+      currentConfig = await fetch('/apps.json').then(r => r.json());
+      renderGrid(false);
+    } catch(e) {
+      document.getElementById('apps-grid').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:10px">Impossible de charger apps.json</div>';
+    }
+  }
+
+  function renderGrid(isEdit) {
+    const grid = document.getElementById('apps-grid');
+    grid.innerHTML = '';
+    if (!currentConfig) return;
+    currentConfig.sections.forEach((section, sIdx) => {
+      if (isEdit) {
+        const row = document.createElement('div');
+        row.className = 'edit-section-row';
+        const inp = document.createElement('input');
+        inp.className = 'edit-section-input';
+        inp.type = 'text';
+        inp.value = section.label || '';
+        inp.placeholder = sIdx === 0 ? 'Section principale (sans titre)' : 'Nom de la section…';
+        inp.oninput = e => { currentConfig.sections[sIdx].label = e.target.value.trim() || null; };
+        row.appendChild(inp);
+        if (currentConfig.sections.length > 1) {
+          const delBtn = document.createElement('button');
+          delBtn.className = 'edit-del-section-btn';
+          delBtn.textContent = '✕ Supprimer';
+          delBtn.onclick = () => { currentConfig.sections.splice(sIdx, 1); renderGrid(true); };
+          row.appendChild(delBtn);
+        }
+        grid.appendChild(row);
+      } else if (section.label) {
+        const lbl = document.createElement('div');
+        lbl.className = 'grid-label';
+        lbl.textContent = section.label;
+        grid.appendChild(lbl);
+      }
+      section.apps.forEach((app, aIdx) => {
+        grid.appendChild(isEdit ? makeEditTile(app, sIdx, aIdx) : makeTile(app));
+      });
+      if (isEdit) {
+        const addBtn = document.createElement('button');
+        addBtn.className = 'edit-add-app-btn';
+        addBtn.textContent = '＋ App';
+        addBtn.onclick = () => openAddModal(sIdx);
+        grid.appendChild(addBtn);
+      }
+    });
+    if (isEdit) {
+      const wrap = document.createElement('div');
+      wrap.className = 'edit-add-section-wrap';
+      const sBtn = document.createElement('button');
+      sBtn.className = 'edit-add-section-btn';
+      sBtn.textContent = '＋ Nouvelle section';
+      sBtn.onclick = () => { currentConfig.sections.push({ label: null, apps: [] }); renderGrid(true); };
+      wrap.appendChild(sBtn);
+      grid.appendChild(wrap);
+    }
+    if (window.lucide) lucide.createIcons();
+    if (!isEdit) applyFavs();
+  }
+
+  function makeEditTile(app, sIdx, aIdx) {
+    const tile = document.createElement('div');
+    tile.className = 'app-tile edit-tile';
+    tile.draggable = true;
+    tile.dataset.sIdx = sIdx; tile.dataset.aIdx = aIdx;
+    tile.ondragstart = e => { e.dataTransfer.setData('text/plain', JSON.stringify({sIdx, aIdx})); setTimeout(() => tile.style.opacity = '0.35', 0); };
+    tile.ondragend = () => { tile.style.opacity = ''; tile.classList.remove('edit-drag-over'); };
+    tile.ondragover = e => { e.preventDefault(); tile.classList.add('edit-drag-over'); };
+    tile.ondragleave = () => tile.classList.remove('edit-drag-over');
+    tile.ondrop = e => {
+      e.preventDefault(); tile.classList.remove('edit-drag-over');
+      try {
+        const from = JSON.parse(e.dataTransfer.getData('text/plain'));
+        const toSIdx = parseInt(tile.dataset.sIdx), toAIdx = parseInt(tile.dataset.aIdx);
+        if (from.sIdx === toSIdx && from.aIdx === toAIdx) return;
+        const [moved] = currentConfig.sections[from.sIdx].apps.splice(from.aIdx, 1);
+        const insertAt = (from.sIdx === toSIdx && from.aIdx < toAIdx) ? toAIdx - 1 : toAIdx;
+        currentConfig.sections[toSIdx].apps.splice(insertAt, 0, moved);
+        renderGrid(true);
+      } catch {}
+    };
+    const delBtn = document.createElement('button');
+    delBtn.className = 'edit-del-btn'; delBtn.textContent = '✕';
+    delBtn.onclick = e => { e.stopPropagation(); currentConfig.sections[sIdx].apps.splice(aIdx, 1); renderGrid(true); };
+    tile.appendChild(delBtn);
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'app-icon';
+    if (app.color) { iconDiv.style.background = hexToRgba(app.color, 0.12); iconDiv.style.border = `1px solid ${hexToRgba(app.color, 0.22)}`; }
+    if (app.lucide) { const ico = document.createElement('i'); ico.dataset.lucide = app.lucide; ico.style.color = app.color || 'var(--muted2)'; iconDiv.appendChild(ico); }
+    else iconDiv.textContent = app.emoji || '📦';
+    tile.appendChild(iconDiv);
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.className = 'edit-name-input'; nameInput.value = app.name;
+    nameInput.onclick = e => e.stopPropagation();
+    nameInput.oninput = e => { currentConfig.sections[sIdx].apps[aIdx].name = e.target.value; };
+    tile.appendChild(nameInput);
+    const urlHint = document.createElement('div');
+    urlHint.className = 'edit-url-hint';
+    try { const u = new URL(app.url); urlHint.textContent = u.port ? ':' + u.port : u.hostname; } catch { urlHint.textContent = app.url.slice(0, 20); }
+    tile.appendChild(urlHint);
+    return tile;
+  }
+
+  function toggleEditMode() {
+    if (!currentConfig) return;
+    if (!editMode) {
+      _configBackup = JSON.parse(JSON.stringify(currentConfig));
+    } else {
+      currentConfig = JSON.parse(JSON.stringify(_configBackup));
+    }
+    editMode = !editMode;
+    const btn = document.getElementById('edit-btn');
+    btn.textContent = editMode ? '✕ Annuler' : '✏️ Éditer';
+    btn.classList.toggle('active', editMode);
+    document.getElementById('save-btn').style.display = editMode ? '' : 'none';
+    renderGrid(editMode);
+  }
+
+  async function saveConfig() {
+    const btn = document.getElementById('save-btn');
+    btn.textContent = '…'; btn.disabled = true;
+    try {
+      const r = await fetch('/save-apps', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(currentConfig) });
+      const d = await r.json();
+      if (d.ok) {
+        _configBackup = JSON.parse(JSON.stringify(currentConfig));
+        editMode = false;
+        document.getElementById('edit-btn').textContent = '✏️ Éditer';
+        document.getElementById('edit-btn').classList.remove('active');
+        btn.style.display = 'none';
+        renderGrid(false);
+      } else { alert('Erreur sauvegarde : ' + d.error); }
+    } catch(e) { alert('Erreur réseau : ' + e.message); }
+    btn.textContent = '💾 Sauvegarder'; btn.disabled = false;
+  }
+
+  function openAddModal(sIdx) {
+    _addModalSectionIdx = sIdx;
+    document.getElementById('edit-modal').classList.add('open');
+    document.getElementById('modal-name').value = '';
+    document.getElementById('modal-url').value = '';
+    document.getElementById('modal-icon').value = '';
+    document.getElementById('modal-color').value = '#60a5fa';
+    setTimeout(() => document.getElementById('modal-name').focus(), 50);
+  }
+  function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+  function confirmAddApp() {
+    const name = document.getElementById('modal-name').value.trim();
+    const url  = document.getElementById('modal-url').value.trim();
+    const icon = document.getElementById('modal-icon').value.trim();
+    const color = document.getElementById('modal-color').value;
+    if (!name || !url) { alert('Nom et URL sont requis'); return; }
+    const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+    currentConfig.sections[_addModalSectionIdx].apps.push({ id, name, url, lucide: icon || 'globe', color });
+    closeModal();
+    renderGrid(true);
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  /* ── TOGGLE APPS ── */
+  let appsCollapsed = localStorage.getItem('apps-collapsed') === '1';
+  function toggleApps() {
+    appsCollapsed = !appsCollapsed;
+    localStorage.setItem('apps-collapsed', appsCollapsed ? '1' : '0');
+    applyAppsCollapse();
+  }
+  function applyAppsCollapse() {
+    const col = document.getElementById('apps-collapsible');
+    const btn = document.getElementById('apps-toggle');
+    col.style.display = appsCollapsed ? 'none' : '';
+    btn.textContent   = appsCollapsed ? '▼' : '▲';
+  }
+
+  /* ─ Favorites ─ */
+  let favorites = [];
+
+  async function loadFavs() {
+    try {
+      const data = await fetch('/favorites').then(r => r.json());
+      favorites = Array.isArray(data) ? data : [];
+    } catch { favorites = []; }
+    applyFavs();
+  }
+
+  function saveFavs() {
+    fetch('/favorites', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(favorites)
+    }).catch(() => {});
+  }
+
+  function toggleFav(e, appName) {
+    e.preventDefault();
+    e.stopPropagation();
+    const idx = favorites.indexOf(appName);
+    if (idx !== -1) favorites.splice(idx, 1);
+    else favorites.push(appName);
+    saveFavs();
+    applyFavs();
+  }
+
+  function applyFavs() {
+    const favsEl   = document.getElementById('apps-favs');
+    const favsGrid = document.getElementById('favs-grid');
+
+    /* update .faved class + visibility on all tiles */
+    document.querySelectorAll('#apps-grid .app-tile').forEach(tile => {
+      const isFav = favorites.includes(tile.dataset.app);
+      tile.classList.toggle('faved', isFav);
+      tile.style.display = isFav ? 'none' : '';
+    });
+
+    if (favorites.length === 0) {
+      favsEl.style.display = 'none';
+      return;
+    }
+    favsEl.style.display = 'block';
+
+    /* clone favorited tiles dans l'ordre du tableau favorites */
+    favsGrid.innerHTML = '';
+    favorites.forEach(appId => {
+      const tile = document.querySelector(`#apps-grid .app-tile[data-app="${appId}"]`);
+      if (!tile) return;
+      const clone = tile.cloneNode(true);
+      clone.style.display = '';
+      clone.classList.add('faved');
+      clone.draggable = true;
+      /* rewire star button */
+      const btn = clone.querySelector('.fav-btn');
+      if (btn) btn.onclick = (e) => toggleFav(e, appId);
+      /* drag-to-reorder */
+      clone.ondragstart = e => { e.dataTransfer.setData('text/plain', appId); setTimeout(() => clone.style.opacity = '0.35', 0); };
+      clone.ondragend   = () => { clone.style.opacity = ''; clone.classList.remove('edit-drag-over'); };
+      clone.ondragover  = e => { e.preventDefault(); clone.classList.add('edit-drag-over'); };
+      clone.ondragleave = () => clone.classList.remove('edit-drag-over');
+      clone.ondrop = e => {
+        e.preventDefault(); clone.classList.remove('edit-drag-over');
+        const fromId = e.dataTransfer.getData('text/plain');
+        if (fromId === appId) return;
+        const fromIdx = favorites.indexOf(fromId);
+        const toIdx   = favorites.indexOf(appId);
+        if (fromIdx === -1 || toIdx === -1) return;
+        favorites.splice(fromIdx, 1);
+        favorites.splice(fromIdx < toIdx ? toIdx - 1 : toIdx, 0, fromId);
+        saveFavs();
+        applyFavs();
+      };
+      favsGrid.appendChild(clone);
+    });
+  }
+
+  loadApps().then(() => loadFavs());
+  loadAlerts();
+  applyAppsCollapse();
+
+  fetchSystem();
+  fetchTweets();
+  setInterval(fetchSystem, 3000);
+  setInterval(fetchTweets, 5 * 60 * 1000);
+
+  /* ─ Weather ─ */
+  const WX_ICONS = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌦️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'🌨️',80:'🌦️',81:'🌧️',82:'🌧️',95:'⛈️',96:'⛈️',99:'⛈️' };
+  async function fetchWeather() {
+    try {
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=43.783&longitude=1.617&current=temperature_2m,weather_code,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m,cloud_cover,visibility,uv_index&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FParis&forecast_days=1';
+      const d = await (await fetch(url)).json();
+      const c = d.current;
+      const dd = d.daily;
+      const icon = WX_ICONS[c.weather_code] || '🌡️';
+      document.getElementById('h-weather').childNodes[1] && null;
+      document.getElementById('h-weather').textContent = `${icon} ${Math.round(c.temperature_2m)}°C  💧${c.relative_humidity_2m}%`;
+      document.getElementById('wp-details').innerHTML = `
+        <div>🌡️ Ressenti : <strong>${Math.round(c.apparent_temperature)}°C</strong></div>
+        <div>💧 Humidité : <strong>${c.relative_humidity_2m}%</strong></div>
+        <div>🌬️ Vent : <strong>${Math.round(c.wind_speed_10m)} km/h</strong></div>
+        <div>🌧️ Précipitations : <strong>${c.precipitation} mm</strong></div>
+        <div>☁️ Couverture : <strong>${c.cloud_cover}%</strong></div>
+        <div>👁️ Visibilité : <strong>${(c.visibility/1000).toFixed(1)} km</strong></div>
+        <div>🔆 Indice UV : <strong>${c.uv_index}</strong></div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+          <div>📈 Max du jour : <strong>${Math.round(dd.temperature_2m_max[0])}°C</strong></div>
+          <div>📉 Min du jour : <strong>${Math.round(dd.temperature_2m_min[0])}°C</strong></div>
+          <div>🌂 Proba pluie : <strong>${dd.precipitation_probability_max[0]}%</strong></div>
+        </div>`;
+    } catch { document.getElementById('h-weather').textContent = '–'; }
+  }
+  function toggleWeatherPanel() {
+    const p = document.getElementById('weather-panel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('[onclick="toggleWeatherPanel()"]')) {
+      const p = document.getElementById('weather-panel');
+      if (p) p.style.display = 'none';
+    }
+  });
+  fetchWeather();
+  setInterval(fetchWeather, 10 * 60 * 1000);
+
+  /* ─ Theme toggle ─ */
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+  }
+  (function() {
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      document.getElementById('theme-btn').textContent = '🌙';
+    }
+  })();
+
+  /* ── WIDGETS JS ── */
+  const API = 'http://192.168.1.36:2998';
+
+  async function fetchWidgets() {
+    // Docker alerts
+    try {
+      const d = await fetch(`${API}/alerts`).then(r => r.json());
+      const el = document.getElementById('w-docker-val');
+      if (d.length === 0) {
+        el.innerHTML = '<span class="w-ok">✓ Tous OK</span>';
+        setTip('tip-docker', `<div class="tip-title">Alertes Docker</div><span style="color:#4ade80">✓ Tous les conteneurs tournent</span>`);
+      } else {
+        el.innerHTML = `<span class="w-err">${d.length} alerte${d.length>1?'s':''}</span>`;
+        setTip('tip-docker', `<div class="tip-title">Conteneurs en erreur</div>` +
+          d.map(c => `<div class="tip-row"><span>🔴 ${escHtml(c.name)}</span><strong>${escHtml(c.status)}</strong></div>`).join(''));
+      }
+    } catch { document.getElementById('w-docker-val').textContent = '–'; }
+
+    // Backup BDD
+    try {
+      const d = await fetch(`${API}/db-backup`).then(r => r.json());
+      const days = Math.round(d.age_hours / 24);
+      document.getElementById('w-backup-val').innerHTML = d.ok
+        ? `<span class="${days > 7 ? 'w-warn' : 'w-ok'}">${days}j</span>`
+        : '<span class="w-err">Erreur</span>';
+      setTip('tip-backup', d.ok
+        ? `<div class="tip-title">Dernier backup BDD</div>` +
+          `<div class="tip-row"><span>Fichier</span><strong>${escHtml(d.file)}</strong></div>` +
+          `<div class="tip-row"><span>Taille</span><strong>${d.size_mb} MB</strong></div>` +
+          `<div class="tip-row"><span>Âge</span><strong>${d.age_hours}h (${days}j)</strong></div>`
+        : `<div class="tip-title">Backup BDD</div><span style="color:#f87171">Aucun fichier trouvé</span>`);
+    } catch { document.getElementById('w-backup-val').textContent = '–'; }
+
+    // Ping
+    try {
+      const d = await fetch(`${API}/ping`).then(r => r.json());
+      const ms = d.ms;
+      document.getElementById('w-ping-val').innerHTML = d.ok
+        ? `<span class="${ms < 50 ? 'w-ok' : ms < 150 ? 'w-warn' : 'w-err'}">${ms} ms</span>`
+        : '<span class="w-err">Timeout</span>';
+      setTip('tip-ping', d.ok
+        ? `<div class="tip-title">Ping Internet</div>` +
+          `<div class="tip-row"><span>Cible</span><strong>8.8.8.8 (Google DNS)</strong></div>` +
+          `<div class="tip-row"><span>Latence</span><strong>${ms} ms</strong></div>` +
+          `<div class="tip-row"><span>Qualité</span><strong>${ms < 50 ? '🟢 Excellente' : ms < 150 ? '🟡 Correcte' : '🔴 Dégradée'}</strong></div>`
+        : `<div class="tip-title">Ping Internet</div><span style="color:#f87171">Timeout — connexion hors ligne ?</span>`);
+    } catch { document.getElementById('w-ping-val').textContent = '–'; }
+
+    // Network devices
+    try {
+      const d = await fetch(`${API}/network`).then(r => r.json());
+      document.getElementById('w-net-val').textContent = `${d.count} appareil${d.count>1?'s':''}`;
+      setTip('tip-net', `<div class="tip-title">Appareils réseau (${d.count})</div>` +
+        (d.devices.length
+          ? d.devices.map(x =>
+              `<div class="tip-row"><span>${escHtml(x.ip)}</span><strong style="font-size:10px;color:var(--muted)">${escHtml(x.mac)}</strong></div>`
+            ).join('')
+          : '–'));
+    } catch { document.getElementById('w-net-val').textContent = '–'; }
+  }
+
+  async function fetchCandidatures() {
+    try {
+      const d = await fetch('http://192.168.1.36:8086/api/data').then(r => r.json());
+      const all = d.candidatures || [];
+      const enCours   = all.filter(c => c.status === 'en-cours').length;
+      const enAttente = all.filter(c => c.status === 'en-attente').length;
+      const refus     = all.filter(c => c.status === 'refus').length;
+      const accepte   = all.filter(c => c.status === 'accepte').length;
+      document.getElementById('w-cand-val').innerHTML = `<span class="${enCours>0?'w-warn':'w-ok'}">${enCours} en cours</span>`;
+      setTip('tip-cand', `<div class="tip-title">Candidatures (${all.length})</div>` +
+        `<div class="tip-row"><span>🟡 En cours</span><strong>${enCours}</strong></div>` +
+        `<div class="tip-row"><span>⏳ En attente</span><strong>${enAttente}</strong></div>` +
+        (accepte ? `<div class="tip-row"><span>🟢 Acceptée(s)</span><strong>${accepte}</strong></div>` : '') +
+        (refus   ? `<div class="tip-row"><span>🔴 Refus</span><strong>${refus}</strong></div>` : ''));
+    } catch { document.getElementById('w-cand-val').textContent = '–'; }
+  }
+
+  function updateContainerWidgets(containers) {
+    // Cloudflare
+    const cf = containers.find(c => c.name === 'cloudflared');
+    const cfOk = cf && cf.status === 'running';
+    document.getElementById('w-cf-val').innerHTML = cfOk
+      ? '<span class="w-ok">✓ Actif</span>'
+      : '<span class="w-err">✗ Inactif</span>';
+    setTip('tip-cf', `<div class="tip-title">Cloudflare Tunnel</div>` +
+      `<div class="tip-row"><span>Statut</span><strong>${cfOk ? '🟢 Running' : '🔴 Arrêté'}</strong></div>` +
+      (cf ? `<div class="tip-row"><span>RAM</span><strong>${fmtGB(cf.mem)} GB</strong></div>` +
+            `<div class="tip-row"><span>CPU</span><strong>${cf.cpu}%</strong></div>` : ''));
+
+    // Home Assistant
+    const ha = containers.find(c => c.name === 'homeassistant');
+    const haOk = ha && ha.status === 'running';
+    document.getElementById('w-ha-val').innerHTML = haOk
+      ? '<span class="w-ok">✓ En ligne</span>'
+      : '<span class="w-err">✗ Hors ligne</span>';
+    setTip('tip-ha', `<div class="tip-title">Home Assistant</div>` +
+      `<div class="tip-row"><span>Statut</span><strong>${haOk ? '🟢 Running' : '🔴 Arrêté'}</strong></div>` +
+      (ha ? `<div class="tip-row"><span>RAM</span><strong>${fmtGB(ha.mem)} GB</strong></div>` +
+            `<div class="tip-row"><span>CPU</span><strong>${ha.cpu}%</strong></div>` +
+            `<div class="tip-row"><span>URL</span><strong>:8123</strong></div>` : ''));
+  }
+
+  fetchWidgets();
+  fetchCandidatures();
+  checkCalendarYesterday();
+  setInterval(fetchWidgets, 30000);
+  setInterval(fetchCandidatures, 60000);
+  setInterval(checkCalendarYesterday, 5 * 60 * 1000);
+
+  /* ── ALERT HISTORY ── */
+  let alertHistory = [];
+
+  function saveAlerts() {
+    fetch('/alerts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(alertHistory)
+    }).catch(() => {});
+  }
+
+  async function loadAlerts() {
+    try {
+      alertHistory = await fetch('/alerts').then(r => r.json());
+    } catch { alertHistory = []; }
+    updateAlertsBadge();
+  }
+
+  function logAlert(type, message) {
+    const entry = { time: new Date().toISOString(), type, message };
+    alertHistory.unshift(entry);
+    if (alertHistory.length > 200) alertHistory = alertHistory.slice(0, 200);
+    saveAlerts();
+    updateAlertsBadge();
+  }
+
+  function updateAlertsBadge() {
+    const badge = document.getElementById('alerts-badge');
+    const errCount = alertHistory.filter(a => a.type === 'err' && !a.seen).length;
+    if (errCount > 0) {
+      badge.textContent = errCount > 9 ? '9+' : errCount;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function renderAlertHistory() {
+    const el = document.getElementById('alerts-history-list');
+    if (!alertHistory.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">Aucune alerte enregistrée.</div>'; return; }
+    el.innerHTML = alertHistory.map(a => {
+      const d = new Date(a.time);
+      const t = d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR');
+      return `<div class="alert-item ${a.type}"><div class="alert-item-time">${t}</div><div class="alert-item-msg">${escHtml(a.message)}</div></div>`;
+    }).join('');
+    alertHistory.forEach(a => a.seen = true);
+    saveAlerts();
+    updateAlertsBadge();
+  }
+
+  function clearAlertHistory() {
+    alertHistory = [];
+    saveAlerts();
+    updateAlertsBadge();
+    renderAlertHistory();
+  }
+
+  function toggleAlertsPanel() {
+    const p = document.getElementById('alerts-panel');
+    const cp = document.getElementById('containers-panel');
+    cp.classList.remove('open');
+    const opening = !p.classList.contains('open');
+    p.classList.toggle('open');
+    if (opening) renderAlertHistory();
+  }
+
+  /* Hook logAlert dans fetchWidgets — surveiller les alertes Docker */
+  let _lastDockerAlerts = [];
+  const _origFetchWidgets = fetchWidgets;
+  async function fetchWidgetsWithLog() {
+    await _origFetchWidgets();
+    try {
+      const d = await fetch(`${API}/alerts`).then(r => r.json()).catch(() => []);
+      const names = d.map(c => c.name).sort().join(',');
+      const prev = _lastDockerAlerts.sort().join(',');
+      if (names !== prev) {
+        if (d.length > 0) logAlert('err', `🔴 ${d.length} conteneur(s) en erreur : ${d.map(c => c.name + ' ('+c.status+')').join(', ')}`);
+        else if (_lastDockerAlerts.length > 0) logAlert('ok', `✅ Tous les conteneurs sont revenus à la normale`);
+        _lastDockerAlerts = d.map(c => c.name);
+      }
+    } catch {}
+  }
+
+  /* ── CONTAINERS PANEL ── */
+  function toggleContainersPanel() {
+    const p = document.getElementById('containers-panel');
+    const ap = document.getElementById('alerts-panel');
+    ap.classList.remove('open');
+    p.classList.toggle('open');
+    if (p.classList.contains('open')) renderContainersPanel();
+  }
+
+  function renderContainersPanel() {
+    const el = document.getElementById('containers-list');
+    if (!_containers.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">Aucun conteneur chargé.</div>'; return; }
+    el.innerHTML = _containers.map(c => {
+      const color = c.status === 'running' ? '#4ade80' : '#f87171';
+      const label = c.status === 'running' ? 'running' : c.status;
+      return `<div class="ctr-item">
+        <div class="ctr-dot" style="background:${color}"></div>
+        <div class="ctr-name">${escHtml(c.name)}</div>
+        <div class="ctr-status">${label}</div>
+        <button class="restart-btn" id="rbtn-${escHtml(c.name)}" onclick="restartContainer('${escHtml(c.name)}')">↺</button>
+      </div>`;
+    }).join('');
+  }
+
+  async function restartContainer(name) {
+    const btn = document.getElementById('rbtn-' + name);
+    if (!btn) return;
+    btn.disabled = true; btn.textContent = '…';
+    try {
+      const d = await fetch(`http://192.168.1.36:2998/restart/${encodeURIComponent(name)}`, { method: 'POST' }).then(r => r.json());
+      btn.textContent = d.ok ? '✓' : '✗';
+      logAlert(d.ok ? 'ok' : 'err', d.ok ? `↺ Redémarrage de ${name} lancé` : `✗ Echec redémarrage ${name} : ${d.error}`);
+      setTimeout(() => { btn.textContent = '↺'; btn.disabled = false; }, 3000);
+      setTimeout(() => fetchSystem(), 6000);
+    } catch {
+      btn.textContent = '✗'; btn.disabled = false;
+    }
+  }
+
+  /* ── TORRENTS PANEL ── */
+  let _torrentsInterval = null;
+
+  function toggleTorrentsPanel() {
+    const p = document.getElementById('torrents-panel');
+    const cp = document.getElementById('containers-panel');
+    const ap = document.getElementById('alerts-panel');
+    cp.classList.remove('open');
+    ap.classList.remove('open');
+    p.classList.toggle('open');
+    if (p.classList.contains('open')) {
+      fetchTorrents();
+      if (!_torrentsInterval) _torrentsInterval = setInterval(fetchTorrents, 5000);
+    } else {
+      clearInterval(_torrentsInterval); _torrentsInterval = null;
+    }
+  }
+
+  async function fetchTorrents() {
+    try {
+      const data = await fetch('http://192.168.1.36:2998/torrents').then(r => r.json());
+      if (data.error) { document.getElementById('torrents-list').innerHTML = `<div style="color:var(--muted);font-size:12px;padding:20px">${escHtml(data.error)}</div>`; return; }
+      const el = document.getElementById('torrents-list');
+      const active = data.filter(t => !['pausedUP','stalledUP'].includes(t.state));
+      // mise à jour du badge dans le header
+      document.getElementById('h-torrents').textContent = data.length + ' torrent' + (data.length > 1 ? 's' : '');
+      const [dlv,dlu] = fmtBytes(data.reduce((s,t) => s + t.dlspeed, 0));
+      const [upv,upu] = fmtBytes(data.reduce((s,t) => s + t.upspeed, 0));
+      setTip('tip-torrents', `<div class="tip-title">Torrents</div>`
+        + `<div class="tip-row"><span>↓ Global</span><strong>${dlv} ${dlu}/s</strong></div>`
+        + `<div class="tip-row"><span>↑ Global</span><strong>${upv} ${upu}/s</strong></div>`);
+      if (!data.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">Aucun torrent.</div>'; return; }
+      el.innerHTML = data.map(t => {
+        const pct = t.progress;
+        const [dlv,dlu] = fmtBytes(t.dlspeed);
+        const [upv,upu] = fmtBytes(t.upspeed);
+        const etaStr = t.eta > 0 && t.eta < 8640000 ? fmtEta(t.eta) : '';
+        const color = pct >= 100 ? '#4ade80' : t.dlspeed > 0 ? '#60a5fa' : '#facc15';
+        return `<div class="ctr-item" style="flex-direction:column;align-items:stretch;gap:4px;padding:10px 14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px">${escHtml(t.name)}</span>
+            <span style="font-size:10px;color:var(--muted);flex-shrink:0">${pct}%</span>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:2px">
+            <div style="width:${pct}%;height:100%;background:${color};border-radius:2px;transition:width .3s"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">
+            <span>↓ ${dlv} ${dlu}/s &nbsp; ↑ ${upv} ${upu}/s</span>
+            <span>${etaStr}</span>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) {}
+  }
+
+  /* ── GOOGLE SEARCH ── */
+  function doSearch(e) {
+    e.preventDefault();
+    const q = document.getElementById('search-input').value.trim();
+    if (q) window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
+  }
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Escape') e.target.value = '';
+  });
+
+  /* ── CALENDRIER NOTIFICATION ── */
+  function getYesterdayKey() {
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    return y.getFullYear() + '-' + String(y.getMonth()+1).padStart(2,'0') + '-' + String(y.getDate()).padStart(2,'0');
+  }
+
+  async function checkCalendarYesterday() {
+    try {
+      const data = await fetch('http://192.168.1.36:8092/api/data').then(r => r.json());
+      const key = getYesterdayKey();
+      const banner = document.getElementById('cal-notif');
+      if (!data[key]) {
+        const y = new Date(); y.setDate(y.getDate() - 1);
+        document.getElementById('cal-notif-date').textContent =
+          y.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+      }
+    } catch { document.getElementById('cal-notif').style.display = 'none'; }
+  }
+
+  async function fillYesterday(color) {
+    const key = getYesterdayKey();
+    try {
+      const btns = document.querySelectorAll('.cal-day-btn');
+      btns.forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+      const data = await fetch('http://192.168.1.36:8092/api/data').then(r => r.json());
+      data[key] = color;
+      await fetch('http://192.168.1.36:8092/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      document.getElementById('cal-notif').style.display = 'none';
+    } catch {
+      document.querySelectorAll('.cal-day-btn').forEach(b => { b.disabled = false; b.style.opacity = ''; });
+    }
+  }
+
+  function fmtEta(sec) {
+    if (sec < 60) return sec + 's';
+    if (sec < 3600) return Math.floor(sec/60) + 'm';
+    return Math.floor(sec/3600) + 'h' + Math.floor((sec%3600)/60) + 'm';
+  }
+
+  /* Fermer les panels en cliquant à l'extérieur */
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#containers-panel') && !e.target.closest('[onclick="toggleContainersPanel()"]')) {
+      document.getElementById('containers-panel').classList.remove('open');
+    }
+    if (!e.target.closest('#alerts-panel') && !e.target.closest('[onclick="toggleAlertsPanel()"]')) {
+      document.getElementById('alerts-panel').classList.remove('open');
+    }
+    if (!e.target.closest('#torrents-panel') && !e.target.closest('[onclick="toggleTorrentsPanel()"]')) {
+      const p = document.getElementById('torrents-panel');
+      if (p.classList.contains('open')) { p.classList.remove('open'); clearInterval(_torrentsInterval); _torrentsInterval = null; }
+    }
+  });
+
+</script>
+</body>
+</html>
