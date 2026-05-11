@@ -1,0 +1,66 @@
+{
+  "sections": [
+    {
+      "label": null,
+      "apps": [
+        { "id": "Promptus",      "name": "Promptus",         "url": "http://192.168.1.36:3000/promptus/lobby",      "lucide": "swords",        "color": "#a78bfa" },
+        { "id": "Cutia",         "name": "Cutia",             "url": "http://192.168.1.36:3010",                     "lucide": "film",          "color": "#f472b6" },
+        { "id": "n8n",           "name": "n8n",               "url": "http://192.168.1.36:5678",                     "lucide": "zap",           "color": "#fb923c" },
+        { "id": "HomeAssistant", "name": "Home Assistant",    "url": "http://192.168.1.36:8123",                     "lucide": "home",          "color": "#38bdf8" },
+        { "id": "Portainer",     "name": "Portainer",         "url": "https://192.168.1.36:9443",                    "lucide": "layers",        "color": "#22d3ee" },
+        { "id": "Dockflare",     "name": "Dockflare",         "url": "http://192.168.1.36:5000",                     "lucide": "cloud",         "color": "#fbbf24" },
+        { "id": "Dozzle",        "name": "Dozzle",            "url": "http://192.168.1.36:8080",                     "lucide": "scroll-text",   "color": "#818cf8" },
+        { "id": "Beszel",        "name": "Beszel",            "url": "http://192.168.1.36:8090",                     "lucide": "bar-chart-2",   "color": "#4ade80" },
+        { "id": "OGame",         "name": "Axon",              "url": "http://192.168.1.36:3002/game/overview?planetId=1", "lucide": "rocket", "color": "#60a5fa" },
+        { "id": "AxonV2",        "name": "Axon 2.0",          "url": "http://192.168.1.36:3004/game/overview",               "lucide": "satellite", "color": "#ff8a00" },
+        { "id": "OGameChantier", "name": "OGame",             "url": "https://s263-fr.ogame.gameforge.com/game/index.php?page=ingame&component=overview", "lucide": "rocket", "color": "#3b82f6" },
+        { "id": "FacturesAuto",  "name": "Factures Auto",     "url": "http://192.168.1.36:8082",                     "lucide": "car",           "color": "#4ade80" },
+        { "id": "FileBrowser",   "name": "FileBrowser",       "url": "http://192.168.1.36:8088",                     "lucide": "folder-open",   "color": "#60a5fa" },
+        { "id": "qBittorrent",   "name": "qBittorrent",       "url": "http://192.168.1.36:8181",                     "lucide": "download",      "color": "#67e8f9" },
+        { "id": "Chomage",       "name": "Chômage",           "url": "http://192.168.1.36:8086",                     "lucide": "briefcase",     "color": "#fcd34d" },
+        { "id": "Courses",       "name": "Courses",           "url": "http://192.168.1.36:8091",                     "lucide": "shopping-cart", "color": "#6ee7b7" },
+        { "id": "Calendrier",    "name": "Calendrier",        "url": "http://192.168.1.36:8092",                     "lucide": "calendar",      "color": "#38bdf8" },
+        { "id": "SportTracker", "name": "Sport",             "url": "http://192.168.1.36:8094",                     "lucide": "dumbbell",      "color": "#f97316" },
+        { "id": "Tamagotchi",  "name": "Tamagotchi",        "url": "http://192.168.1.36:8095",                     "lucide": "heart",         "color": "#c084fc" }
+      ]
+    },
+    {
+      "label": "Outils",
+      "apps": [
+        { "id": "EditeurRoman",   "name": "Éditeur Roman",     "url": "http://192.168.1.36:3000/editeur-roman",     "lucide": "book",          "color": "#d8b4fe" },
+        { "id": "PartageF",       "name": "Partage Fichiers",  "url": "http://192.168.1.36:3000/partage-fichier",   "lucide": "share-2",       "color": "#7dd3fc" },
+        { "id": "ImageLib",       "name": "Image Library",     "url": "http://192.168.1.36:3000/image-library",     "lucide": "image",         "color": "#fda4af" },
+        { "id": "CarnetEntretien","name": "Carnet Entretien",  "url": "http://192.168.1.36:3000/carnet-entretien",  "lucide": "wrench",        "color": "#a8a29e" },
+        { "id": "NotepadApp",     "name": "Bloc-notes",        "url": "http://192.168.1.36:8087",                   "lucide": "notebook-pen",  "color": "#67e8f9" }
+      ]
+    },
+    {
+      "label": "Promptus — Outils JDR",
+      "apps": [
+        { "id": "Projecteur",       "name": "Projecteur",    "url": "http://192.168.1.36:3000/projecteur",           "lucide": "monitor",       "color": "#93c5fd" },
+        { "id": "PromptusMarket",   "name": "Market",        "url": "http://192.168.1.36:3000/promptus/market",      "lucide": "shopping-bag",  "color": "#fdba74" },
+        { "id": "CreateurBiome",    "name": "Biome",         "url": "http://192.168.1.36:3000/createur-biome",       "lucide": "trees",         "color": "#86efac" },
+        { "id": "CreateurClasse",   "name": "Classe",        "url": "http://192.168.1.36:3000/createur-classe",      "lucide": "user-round",    "color": "#c4b5fd" },
+        { "id": "CreateurConso",    "name": "Consommable",   "url": "http://192.168.1.36:3000/createur-consommable", "lucide": "flask-conical", "color": "#67e8f9" },
+        { "id": "CreateurFamilier", "name": "Familier",      "url": "http://192.168.1.36:3000/createur-familier",    "lucide": "paw-print",     "color": "#86efac" },
+        { "id": "CreateurItem",     "name": "Item",          "url": "http://192.168.1.36:3000/createur-item",        "lucide": "gem",           "color": "#fcd34d" },
+        { "id": "CreateurEquip",    "name": "Équipement",    "url": "http://192.168.1.36:3000/createur-equipement",  "lucide": "shield",        "color": "#94a3b8" },
+        { "id": "CreateurMap",      "name": "Map",           "url": "http://192.168.1.36:3000/createur-map",         "lucide": "map",           "color": "#5eead4" },
+        { "id": "CreateurMonstre",  "name": "Monstre",       "url": "http://192.168.1.36:3000/createur-monstre",     "lucide": "skull",         "color": "#fca5a5" },
+        { "id": "CreateurPNJ",      "name": "PNJ",           "url": "http://192.168.1.36:3000/createur-pnj",         "lucide": "user",          "color": "#d8b4fe" },
+        { "id": "CreateurQuete",    "name": "Quête",         "url": "http://192.168.1.36:3000/createur-quete",       "lucide": "scroll",        "color": "#fcd34d" },
+        { "id": "CreateurScenario", "name": "Scénario",      "url": "http://192.168.1.36:3000/createur-scenario",    "lucide": "drama",         "color": "#93c5fd" },
+        { "id": "CreateurPanoplie", "name": "Panoplie",      "url": "http://192.168.1.36:3000/createur-panoplie",    "lucide": "layers-2",      "color": "#94a3b8" }
+      ]
+    },
+    {
+      "label": "Sécurité & Infra",
+      "apps": [
+        { "id": "PiHole",    "name": "Pi-hole",   "url": "https://192.168.1.36:8443/admin", "lucide": "shield",    "color": "#ef4444" },
+        { "id": "Zabbix",    "name": "Zabbix",    "url": "http://192.168.1.36:8098",        "lucide": "network",   "color": "#f97316" },
+        { "id": "CrowdSec",  "name": "CrowdSec",  "url": "http://192.168.1.36:3003",  "lucide": "shield-check", "color": "#fca5a5" },
+        { "id": "Firefox",   "name": "Firefox",   "url": "http://192.168.1.36:5800",  "lucide": "globe",        "color": "#fdba74" }
+      ]
+    }
+  ]
+}
