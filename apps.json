@@ -31,7 +31,8 @@
         { "id": "PartageF",       "name": "Partage Fichiers",  "url": "http://192.168.1.36:3000/partage-fichier",   "lucide": "share-2",       "color": "#7dd3fc" },
         { "id": "ImageLib",       "name": "Image Library",     "url": "http://192.168.1.36:3000/image-library",     "lucide": "image",         "color": "#fda4af" },
         { "id": "CarnetEntretien","name": "Carnet Entretien",  "url": "http://192.168.1.36:3000/carnet-entretien",  "lucide": "wrench",        "color": "#a8a29e" },
-        { "id": "NotepadApp",     "name": "Bloc-notes",        "url": "http://192.168.1.36:8087",                   "lucide": "notebook-pen",  "color": "#67e8f9" }
+        { "id": "NotepadApp",     "name": "Bloc-notes",        "url": "http://192.168.1.36:8087",                   "lucide": "notebook-pen",  "color": "#67e8f9" },
+        { "id": "DesignDashboard","name": "Design Dashboard",  "url": "http://192.168.1.36:8083",                   "lucide": "palette",       "color": "#f9a8d4" }
       ]
     },
     {
