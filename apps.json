@@ -22,7 +22,10 @@
         { "id": "Calendrier",    "name": "Calendrier",        "url": "http://192.168.1.36:8092",                     "lucide": "calendar",      "color": "#38bdf8" },
         { "id": "SportTracker", "name": "Sport",             "url": "http://192.168.1.36:8094",                     "lucide": "dumbbell",      "color": "#f97316" },
         { "id": "Tamagotchi",  "name": "Tamagotchi",        "url": "http://192.168.1.36:8095",                     "lucide": "heart",         "color": "#c084fc" },
-        { "id": "Jellyfin",    "name": "Jellyfin",          "url": "http://192.168.1.36:8100",                     "lucide": "tv-2",          "color": "#aa5cc3" }
+        { "id": "Jellyfin",    "name": "Jellyfin",          "url": "http://192.168.1.36:8100",                     "lucide": "tv-2",          "color": "#aa5cc3" },
+        { "id": "Radarr",      "name": "Radarr",            "url": "http://192.168.1.36:7878",                     "lucide": "film",          "color": "#fbbf24" },
+        { "id": "Sonarr",      "name": "Sonarr",            "url": "http://192.168.1.36:8989",                     "lucide": "tv",            "color": "#60a5fa" },
+        { "id": "Jellyseerr",  "name": "Jellyseerr",        "url": "http://192.168.1.36:5055",                     "lucide": "search",        "color": "#f97316" }
       ]
     },
     {
