@@ -21,7 +21,8 @@
         { "id": "Courses",       "name": "Courses",           "url": "http://192.168.1.36:8091",                     "lucide": "shopping-cart", "color": "#6ee7b7" },
         { "id": "Calendrier",    "name": "Calendrier",        "url": "http://192.168.1.36:8092",                     "lucide": "calendar",      "color": "#38bdf8" },
         { "id": "SportTracker", "name": "Sport",             "url": "http://192.168.1.36:8094",                     "lucide": "dumbbell",      "color": "#f97316" },
-        { "id": "Tamagotchi",  "name": "Tamagotchi",        "url": "http://192.168.1.36:8095",                     "lucide": "heart",         "color": "#c084fc" }
+        { "id": "Tamagotchi",  "name": "Tamagotchi",        "url": "http://192.168.1.36:8095",                     "lucide": "heart",         "color": "#c084fc" },
+        { "id": "Jellyfin",    "name": "Jellyfin",          "url": "http://192.168.1.36:8100",                     "lucide": "tv-2",          "color": "#aa5cc3" }
       ]
     },
     {
